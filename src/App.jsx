@@ -62,8 +62,6 @@ const style = `
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } .header { padding: 16px 20px; } .main { padding: 40px 16px; } }
   .reset-bar { display: flex; justify-content: center; padding-top: 8px; }
-  .success-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,201,177,0.15); border: 1px solid ${TEAL}; color: ${TEAL}; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 100; animation: toastIn 0.3s ease; }
-  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 `;
 
 function ResultCard({ icon, label, children, copyText }) {
@@ -93,7 +91,6 @@ export default function VintedSaaS() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [toast, setToast] = useState(null);
   const fileRef = useRef();
 
   function handleFile(file) {
@@ -136,9 +133,14 @@ Format JSON attendu :
 }`;
 
     try {
-      const response = await fetch("/api/v1/messages", {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "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",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -258,7 +260,6 @@ Format JSON attendu :
           )}
         </main>
       </div>
-      {toast && <div className="success-toast">✓ {toast}</div>}
     </>
   );
 }
